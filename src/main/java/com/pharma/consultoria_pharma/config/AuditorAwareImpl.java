@@ -1,8 +1,9 @@
 package com.pharma.consultoria_pharma.config;
 
 import com.pharma.consultoria_pharma.entities.Usuario;
-import com.pharma.consultoria_pharma.repositories.UsuarioRepository;
-import lombok.RequiredArgsConstructor;
+import com.pharma.consultoria_pharma.security.CustomUserDetails;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,20 +12,21 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
-@RequiredArgsConstructor
 public class AuditorAwareImpl implements AuditorAware<Usuario> {
 
-    private final UsuarioRepository usuarioRepository;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public Optional<Usuario> getCurrentAuditor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()
-                || "anonymousUser".equals(authentication.getPrincipal())) {
+                || !(authentication.getPrincipal() instanceof CustomUserDetails userDetails)) {
             return Optional.empty();
         }
 
-        return usuarioRepository.findByEmail(authentication.getName());
+        // getReference no ejecuta SELECT: evita recursión infinita con JPA Auditing en PUT/PATCH
+        return Optional.of(entityManager.getReference(Usuario.class, userDetails.getIdUsuario()));
     }
 }
