@@ -2,6 +2,7 @@ package com.pharma.consultoria_pharma.controllers;
 
 import com.pharma.consultoria_pharma.dto.request.ServicioRequest;
 import com.pharma.consultoria_pharma.dto.response.ServicioResponse;
+import com.pharma.consultoria_pharma.services.FileStorageService;
 import com.pharma.consultoria_pharma.services.ServicioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,8 +11,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/admin/servicios")
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class ServicioAdminController {
 
     private final ServicioService servicioService;
+    private final FileStorageService fileStorageService;
 
     @GetMapping
     public ResponseEntity<Page<ServicioResponse>> listar(
@@ -36,10 +40,33 @@ public class ServicioAdminController {
         return ResponseEntity.status(HttpStatus.CREATED).body(servicioService.crear(request));
     }
 
+    @PostMapping(path = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ServicioResponse> crear(
+            @Valid @ModelAttribute ServicioRequest request,
+            @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) {
+        String imageUrl = fileStorageService.storeFile(imageFile);
+        if (imageUrl != null) {
+            request.setImagen(imageUrl);
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(servicioService.crear(request));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ServicioResponse> actualizar(
             @PathVariable Long id,
             @Valid @RequestBody ServicioRequest request) {
+        return ResponseEntity.ok(servicioService.actualizar(id, request));
+    }
+
+    @PutMapping(path = "/{id}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ServicioResponse> actualizar(
+            @PathVariable Long id,
+            @Valid @ModelAttribute ServicioRequest request,
+            @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) {
+        String imageUrl = fileStorageService.storeFile(imageFile);
+        if (imageUrl != null) {
+            request.setImagen(imageUrl);
+        }
         return ResponseEntity.ok(servicioService.actualizar(id, request));
     }
 
