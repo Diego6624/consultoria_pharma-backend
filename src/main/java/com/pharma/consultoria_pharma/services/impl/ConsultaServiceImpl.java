@@ -3,9 +3,11 @@ package com.pharma.consultoria_pharma.services.impl;
 import com.pharma.consultoria_pharma.dto.request.ConsultaRequest;
 import com.pharma.consultoria_pharma.dto.response.ConsultaResponse;
 import com.pharma.consultoria_pharma.entities.Consulta;
+import com.pharma.consultoria_pharma.entities.Servicio;
 import com.pharma.consultoria_pharma.exceptions.ResourceNotFoundException;
 import com.pharma.consultoria_pharma.mappers.EntityMapper;
 import com.pharma.consultoria_pharma.repositories.ConsultaRepository;
+import com.pharma.consultoria_pharma.repositories.ServicioRepository;
 import com.pharma.consultoria_pharma.services.ConsultaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +22,7 @@ import java.time.LocalDateTime;
 public class ConsultaServiceImpl implements ConsultaService {
 
     private final ConsultaRepository consultaRepository;
+    private final ServicioRepository servicioRepository;
     private final EntityMapper mapper;
 
     @Override
@@ -27,6 +30,13 @@ public class ConsultaServiceImpl implements ConsultaService {
     public ConsultaResponse crear(ConsultaRequest request) {
         Consulta consulta = mapper.toConsulta(request);
         consulta.setFecha(LocalDateTime.now());
+
+        if (request.getIdServicio() != null) {
+            Servicio servicio = servicioRepository.findById(request.getIdServicio())
+                    .orElseThrow(() -> new ResourceNotFoundException("Servicio no encontrado con id: " + request.getIdServicio()));
+            consulta.setServicio(servicio);
+        }
+
         return mapper.toConsultaResponse(consultaRepository.save(consulta));
     }
 

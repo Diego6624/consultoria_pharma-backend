@@ -44,7 +44,7 @@ public class Consulta {
     private String mensaje;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_servicio", nullable = false)
+    @JoinColumn(name = "id_servicio")
     private Servicio servicio;
 
     @Column(nullable = false)

@@ -14,6 +14,8 @@ import com.pharma.consultoria_pharma.services.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,6 +59,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .estado(true)
                 .rol(rol)
+                .creadoPor(obtenerUsuarioAutenticado())
                 .build();
 
         return mapper.toUsuarioResponse(usuarioRepository.save(usuario));
@@ -121,6 +124,15 @@ public class UsuarioServiceImpl implements UsuarioService {
     private Usuario findById(Long id) {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + id));
+    }
+
+    private Usuario obtenerUsuarioAutenticado() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+
+        return usuarioRepository.findByEmail(authentication.getName()).orElse(null);
     }
 
     private Rol obtenerRolAdmin(String nombreRol) {

@@ -25,6 +25,12 @@ public class ConsultaRequest {
     @Size(max = 150)
     private String correo;
 
+    @NotBlank(message = "El teléfono es obligatorio")
+    @Size(max = 20)
+    private String telefono;
+
     @NotBlank(message = "El mensaje es obligatorio")
     private String mensaje;
+
+    private Long idServicio;
 }

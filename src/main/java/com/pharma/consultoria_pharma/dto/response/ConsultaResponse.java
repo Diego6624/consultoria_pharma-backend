@@ -18,6 +18,8 @@ public class ConsultaResponse {
     private Long idConsulta;
     private String nombre;
     private String correo;
+    private String telefono;
     private String mensaje;
+    private Long idServicio;
     private LocalDateTime fecha;
 }
