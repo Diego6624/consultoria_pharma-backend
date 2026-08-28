@@ -1,6 +1,7 @@
 package com.pharma.consultoria_pharma.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,4 +29,7 @@ public class ServicioRequest {
 
     @Size(max = 500)
     private String imagen;
+
+    @NotNull(message = "La categoría es obligatoria")
+    private Long idCategoria;
 }

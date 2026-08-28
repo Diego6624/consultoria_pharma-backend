@@ -34,6 +34,8 @@ public interface EntityMapper {
     void updateNoticia(NoticiaRequest request, @MappingTarget Noticia noticia);
 
     // --- Servicio ---
+    @Mapping(source = "categoria.idCategoria", target = "idCategoria")
+    @Mapping(source = "categoria.nombre", target = "nombreCategoria")
     ServicioResponse toServicioResponse(Servicio servicio);
 
     @Mapping(target = "idServicio", ignore = true)

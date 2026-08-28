@@ -2,12 +2,15 @@ package com.pharma.consultoria_pharma.services;
 
 import com.pharma.consultoria_pharma.dto.request.CategoriaRequest;
 import com.pharma.consultoria_pharma.dto.response.CategoriaResponse;
+import com.pharma.consultoria_pharma.entities.TipoCategoria;
 
 import java.util.List;
 
 public interface CategoriaService {
 
     List<CategoriaResponse> listar();
+
+    List<CategoriaResponse> listarPorTipo(TipoCategoria tipo);
 
     CategoriaResponse obtenerPorId(Long id);
 

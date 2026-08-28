@@ -2,6 +2,7 @@ package com.pharma.consultoria_pharma.controllers;
 
 import com.pharma.consultoria_pharma.dto.request.CategoriaRequest;
 import com.pharma.consultoria_pharma.dto.response.CategoriaResponse;
+import com.pharma.consultoria_pharma.entities.TipoCategoria;
 import com.pharma.consultoria_pharma.services.CategoriaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,11 @@ public class CategoriaController {
     private final CategoriaService categoriaService;
 
     @GetMapping
-    public ResponseEntity<List<CategoriaResponse>> listar() {
+    public ResponseEntity<List<CategoriaResponse>> listar(
+            @RequestParam(required = false) TipoCategoria tipo) {
+        if (tipo != null) {
+            return ResponseEntity.ok(categoriaService.listarPorTipo(tipo));
+        }
         return ResponseEntity.ok(categoriaService.listar());
     }
 

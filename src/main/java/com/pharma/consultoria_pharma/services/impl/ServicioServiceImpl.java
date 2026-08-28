@@ -2,9 +2,11 @@ package com.pharma.consultoria_pharma.services.impl;
 
 import com.pharma.consultoria_pharma.dto.request.ServicioRequest;
 import com.pharma.consultoria_pharma.dto.response.ServicioResponse;
+import com.pharma.consultoria_pharma.entities.Categoria;
 import com.pharma.consultoria_pharma.entities.Servicio;
 import com.pharma.consultoria_pharma.exceptions.ResourceNotFoundException;
 import com.pharma.consultoria_pharma.mappers.EntityMapper;
+import com.pharma.consultoria_pharma.repositories.CategoriaRepository;
 import com.pharma.consultoria_pharma.repositories.ServicioRepository;
 import com.pharma.consultoria_pharma.services.ServicioService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ServicioServiceImpl implements ServicioService {
 
     private final ServicioRepository servicioRepository;
+    private final CategoriaRepository categoriaRepository;
     private final EntityMapper mapper;
 
     @Override
@@ -36,6 +39,9 @@ public class ServicioServiceImpl implements ServicioService {
     @Transactional
     public ServicioResponse crear(ServicioRequest request) {
         Servicio servicio = mapper.toServicio(request);
+        Categoria categoria = categoriaRepository.findById(request.getIdCategoria())
+                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada"));
+        servicio.setCategoria(categoria);
         return mapper.toServicioResponse(servicioRepository.save(servicio));
     }
 
@@ -44,6 +50,9 @@ public class ServicioServiceImpl implements ServicioService {
     public ServicioResponse actualizar(Long id, ServicioRequest request) {
         Servicio servicio = findById(id);
         mapper.updateServicio(request, servicio);
+        Categoria categoria = categoriaRepository.findById(request.getIdCategoria())
+                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada"));
+        servicio.setCategoria(categoria);
         return mapper.toServicioResponse(servicioRepository.save(servicio));
     }
 

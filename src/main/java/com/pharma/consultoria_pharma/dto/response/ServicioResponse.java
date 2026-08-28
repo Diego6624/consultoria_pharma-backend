@@ -22,4 +22,6 @@ public class ServicioResponse {
     private String imagen;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Long idCategoria;
+    private String nombreCategoria;
 }

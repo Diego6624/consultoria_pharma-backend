@@ -3,6 +3,7 @@ package com.pharma.consultoria_pharma.services.impl;
 import com.pharma.consultoria_pharma.dto.request.CategoriaRequest;
 import com.pharma.consultoria_pharma.dto.response.CategoriaResponse;
 import com.pharma.consultoria_pharma.entities.Categoria;
+import com.pharma.consultoria_pharma.entities.TipoCategoria;
 import com.pharma.consultoria_pharma.exceptions.BusinessException;
 import com.pharma.consultoria_pharma.exceptions.ResourceNotFoundException;
 import com.pharma.consultoria_pharma.mappers.EntityMapper;
@@ -25,6 +26,14 @@ public class CategoriaServiceImpl implements CategoriaService {
     @Transactional(readOnly = true)
     public List<CategoriaResponse> listar() {
         return categoriaRepository.findAll().stream()
+                .map(mapper::toCategoriaResponse)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CategoriaResponse> listarPorTipo(TipoCategoria tipo) {
+        return categoriaRepository.findByTipo(tipo).stream()
                 .map(mapper::toCategoriaResponse)
                 .toList();
     }
