@@ -50,6 +50,7 @@ public interface EntityMapper {
 
     // --- Consulta ---
     @Mapping(source = "servicio.idServicio", target = "idServicio")
+    @Mapping(source = "servicio.titulo", target = "nombreServicio")
     ConsultaResponse toConsultaResponse(Consulta consulta);
 
     @Mapping(target = "idConsulta", ignore = true)

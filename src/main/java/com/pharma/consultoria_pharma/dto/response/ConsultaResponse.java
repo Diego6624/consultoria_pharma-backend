@@ -21,5 +21,6 @@ public class ConsultaResponse {
     private String telefono;
     private String mensaje;
     private Long idServicio;
+    private String nombreServicio;
     private LocalDateTime fecha;
 }
