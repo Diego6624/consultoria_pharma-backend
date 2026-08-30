@@ -10,6 +10,9 @@ import com.pharma.consultoria_pharma.repositories.CategoriaRepository;
 import com.pharma.consultoria_pharma.repositories.NoticiaRepository;
 import com.pharma.consultoria_pharma.services.NoticiaService;
 import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -41,9 +44,9 @@ public class NoticiaServiceImpl implements NoticiaService {
     @Override
     @Transactional
     public NoticiaResponse crear(NoticiaRequest request) {
-        Categoria categoria = findCategoria(request.getIdCategoria());
         Noticia noticia = mapper.toNoticia(request);
-        noticia.setCategoria(categoria);
+        noticia.setFechaPublicacion(LocalDateTime.now());
+        noticia.setCategoria(findCategoria(request.getIdCategoria()));
         return mapper.toNoticiaResponse(noticiaRepository.save(noticia));
     }
 

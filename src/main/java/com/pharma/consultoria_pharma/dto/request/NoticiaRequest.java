@@ -33,10 +33,6 @@ public class NoticiaRequest {
     @Size(max = 500)
     private String imagen;
 
-    @NotNull(message = "La fecha de publicación es obligatoria")
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    private LocalDateTime fechaPublicacion;
-
     @NotNull(message = "La categoría es obligatoria")
     private Long idCategoria;
 }
