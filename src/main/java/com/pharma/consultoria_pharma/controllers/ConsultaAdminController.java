@@ -29,4 +29,9 @@ public class ConsultaAdminController {
     public ResponseEntity<ConsultaResponse> obtener(@PathVariable Long id) {
         return ResponseEntity.ok(consultaService.obtenerPorId(id));
     }
+
+    @PatchMapping("/{id}/revisada")
+    public ResponseEntity<ConsultaResponse> marcarRevisada(@PathVariable Long id) {
+        return ResponseEntity.ok(consultaService.marcarRevisada(id));
+    }
 }

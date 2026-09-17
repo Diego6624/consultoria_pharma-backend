@@ -50,4 +50,8 @@ public class Consulta {
     @Column(nullable = false)
     @Builder.Default
     private LocalDateTime fecha = LocalDateTime.now();
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean revisada = false;
 }

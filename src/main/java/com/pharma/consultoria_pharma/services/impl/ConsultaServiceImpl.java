@@ -52,6 +52,14 @@ public class ConsultaServiceImpl implements ConsultaService {
         return mapper.toConsultaResponse(findById(id));
     }
 
+    @Override
+    @Transactional
+    public ConsultaResponse marcarRevisada(Long id) {
+        Consulta consulta = findById(id);
+        consulta.setRevisada(true);
+        return mapper.toConsultaResponse(consultaRepository.save(consulta));
+    }
+
     private Consulta findById(Long id) {
         return consultaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Consulta no encontrada con id: " + id));

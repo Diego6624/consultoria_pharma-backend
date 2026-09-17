@@ -23,4 +23,5 @@ public class ConsultaResponse {
     private Long idServicio;
     private String nombreServicio;
     private LocalDateTime fecha;
+    private Boolean revisada;
 }

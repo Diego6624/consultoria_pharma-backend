@@ -12,4 +12,6 @@ public interface ConsultaService {
     Page<ConsultaResponse> listar(Pageable pageable);
 
     ConsultaResponse obtenerPorId(Long id);
+
+    ConsultaResponse marcarRevisada(Long id);
 }
