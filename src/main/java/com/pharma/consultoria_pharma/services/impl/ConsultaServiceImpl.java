@@ -12,10 +12,12 @@ import com.pharma.consultoria_pharma.services.ConsultaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -55,9 +57,30 @@ public class ConsultaServiceImpl implements ConsultaService {
     @Override
     @Transactional
     public ConsultaResponse marcarRevisada(Long id) {
+        return actualizarRevision(id, true);
+    }
+
+    @Override
+    @Transactional
+    public ConsultaResponse actualizarRevision(Long id, boolean revisada) {
         Consulta consulta = findById(id);
-        consulta.setRevisada(true);
+        consulta.setRevisada(revisada);
         return mapper.toConsultaResponse(consultaRepository.save(consulta));
+    }
+
+    @Override
+    @Transactional
+    public void eliminar(Long id) {
+        consultaRepository.delete(findById(id));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ConsultaResponse> listarTodas() {
+        return consultaRepository.findAll(Sort.by(Sort.Direction.DESC, "fecha"))
+                .stream()
+                .map(mapper::toConsultaResponse)
+                .toList();
     }
 
     private Consulta findById(Long id) {

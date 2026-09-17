@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/admin/consultas")
 @RequiredArgsConstructor
@@ -33,5 +35,23 @@ public class ConsultaAdminController {
     @PatchMapping("/{id}/revisada")
     public ResponseEntity<ConsultaResponse> marcarRevisada(@PathVariable Long id) {
         return ResponseEntity.ok(consultaService.marcarRevisada(id));
+    }
+
+    @PatchMapping("/{id}/revision")
+    public ResponseEntity<ConsultaResponse> actualizarRevision(
+            @PathVariable Long id,
+            @RequestParam boolean revisada) {
+        return ResponseEntity.ok(consultaService.actualizarRevision(id, revisada));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+        consultaService.eliminar(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<List<ConsultaResponse>> exportar() {
+        return ResponseEntity.ok(consultaService.listarTodas());
     }
 }
