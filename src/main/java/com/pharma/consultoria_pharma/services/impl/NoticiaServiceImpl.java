@@ -9,6 +9,7 @@ import com.pharma.consultoria_pharma.mappers.EntityMapper;
 import com.pharma.consultoria_pharma.repositories.CategoriaRepository;
 import com.pharma.consultoria_pharma.repositories.NoticiaRepository;
 import com.pharma.consultoria_pharma.services.NoticiaService;
+import com.pharma.consultoria_pharma.utils.SlugUtil;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -42,9 +43,17 @@ public class NoticiaServiceImpl implements NoticiaService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public NoticiaResponse obtenerPorSlug(String slug) {
+        return mapper.toNoticiaResponse(noticiaRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResourceNotFoundException("Noticia no encontrada: " + slug)));
+    }
+
+    @Override
     @Transactional
     public NoticiaResponse crear(NoticiaRequest request) {
         Noticia noticia = mapper.toNoticia(request);
+        noticia.setSlug(uniqueSlug(request.getTitulo(), null));
         noticia.setFechaPublicacion(LocalDateTime.now());
         noticia.setCategoria(findCategoria(request.getIdCategoria()));
         return mapper.toNoticiaResponse(noticiaRepository.save(noticia));
@@ -55,6 +64,7 @@ public class NoticiaServiceImpl implements NoticiaService {
     public NoticiaResponse actualizar(Long id, NoticiaRequest request) {
         Noticia noticia = findById(id);
         mapper.updateNoticia(request, noticia);
+        noticia.setSlug(uniqueSlug(request.getTitulo(), noticia.getIdNoticia()));
         noticia.setCategoria(findCategoria(request.getIdCategoria()));
         return mapper.toNoticiaResponse(noticiaRepository.save(noticia));
     }
@@ -73,5 +83,20 @@ public class NoticiaServiceImpl implements NoticiaService {
     private Categoria findCategoria(Long id) {
         return categoriaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con id: " + id));
+    }
+
+    private String uniqueSlug(String titulo, Long idNoticia) {
+        String baseSlug = SlugUtil.generate(titulo);
+        if (baseSlug.isBlank()) {
+            baseSlug = "noticia";
+        }
+        String slug = baseSlug;
+        int counter = 1;
+        while (idNoticia == null
+                ? noticiaRepository.existsBySlug(slug)
+                : noticiaRepository.existsBySlugAndIdNoticiaNot(slug, idNoticia)) {
+            slug = baseSlug + "-" + counter++;
+        }
+        return slug;
     }
 }

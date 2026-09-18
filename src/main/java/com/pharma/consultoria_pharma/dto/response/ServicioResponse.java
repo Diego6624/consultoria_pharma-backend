@@ -17,6 +17,7 @@ public class ServicioResponse {
 
     private Long idServicio;
     private String titulo;
+    private String slug;
     private String descripcion;
     private String contenido;
     private String imagen;

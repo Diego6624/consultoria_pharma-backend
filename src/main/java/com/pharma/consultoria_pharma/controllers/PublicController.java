@@ -46,6 +46,11 @@ public class PublicController {
         return ResponseEntity.ok(noticiaService.obtenerPorId(id));
     }
 
+    @GetMapping("/noticias/slug/{slug}")
+    public ResponseEntity<NoticiaResponse> obtenerNoticiaPorSlug(@PathVariable String slug) {
+        return ResponseEntity.ok(noticiaService.obtenerPorSlug(slug));
+    }
+
     @GetMapping("/categorias")
     public ResponseEntity<List<CategoriaResponse>> listarCategorias() {
         return ResponseEntity.ok(categoriaService.listar());
@@ -60,6 +65,11 @@ public class PublicController {
     @GetMapping("/servicios/{id}")
     public ResponseEntity<ServicioResponse> obtenerServicio(@PathVariable Long id) {
         return ResponseEntity.ok(servicioService.obtenerPorId(id));
+    }
+
+    @GetMapping("/servicios/slug/{slug}")
+    public ResponseEntity<ServicioResponse> obtenerServicioPorSlug(@PathVariable String slug) {
+        return ResponseEntity.ok(servicioService.obtenerPorSlug(slug));
     }
 
     @GetMapping("/ubicaciones")

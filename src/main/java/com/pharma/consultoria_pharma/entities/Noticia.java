@@ -39,6 +39,9 @@ public class Noticia {
     @Column(nullable = false, length = 200)
     private String titulo;
 
+    @Column(nullable = false, unique = true, length = 250)
+    private String slug;
+
     @Column(nullable = false, length = 500)
     private String descripcion;
 

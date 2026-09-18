@@ -11,6 +11,8 @@ public interface ServicioService {
 
     ServicioResponse obtenerPorId(Long id);
 
+    ServicioResponse obtenerPorSlug(String slug);
+
     ServicioResponse crear(ServicioRequest request);
 
     ServicioResponse actualizar(Long id, ServicioRequest request);

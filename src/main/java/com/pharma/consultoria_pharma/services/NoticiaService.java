@@ -11,6 +11,8 @@ public interface NoticiaService {
 
     NoticiaResponse obtenerPorId(Long id);
 
+    NoticiaResponse obtenerPorSlug(String slug);
+
     NoticiaResponse crear(NoticiaRequest request);
 
     NoticiaResponse actualizar(Long id, NoticiaRequest request);
