@@ -23,7 +23,7 @@ public class ConsultaAdminController {
 
     @GetMapping
     public ResponseEntity<Page<ConsultaResponse>> listar(
-            @PageableDefault(size = 10, sort = "fecha", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(size = 10, sort = "idConsulta", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(consultaService.listar(pageable));
     }
 

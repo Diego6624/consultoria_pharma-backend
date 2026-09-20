@@ -24,7 +24,7 @@ public class UbicacionAdminController {
 
     @GetMapping
     public ResponseEntity<Page<UbicacionResponse>> listar(
-            @PageableDefault(size = 10, sort = "nombre", direction = Sort.Direction.ASC) Pageable pageable) {
+            @PageableDefault(size = 10, sort = "idUbicacion", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(ubicacionService.listar(pageable));
     }
 

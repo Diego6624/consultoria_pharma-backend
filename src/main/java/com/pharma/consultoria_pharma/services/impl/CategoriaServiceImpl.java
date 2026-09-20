@@ -12,6 +12,8 @@ import com.pharma.consultoria_pharma.services.CategoriaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -36,6 +38,15 @@ public class CategoriaServiceImpl implements CategoriaService {
         return categoriaRepository.findByTipo(tipo).stream()
                 .map(mapper::toCategoriaResponse)
                 .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<CategoriaResponse> listar(Pageable pageable, TipoCategoria tipo) {
+        return (tipo == null
+                ? categoriaRepository.findAll(pageable)
+                : categoriaRepository.findByTipo(tipo, pageable))
+                .map(mapper::toCategoriaResponse);
     }
 
     @Override

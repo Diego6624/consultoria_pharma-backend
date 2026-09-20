@@ -26,7 +26,7 @@ public class ServicioAdminController {
 
     @GetMapping
     public ResponseEntity<Page<ServicioResponse>> listar(
-            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(size = 10, sort = "idServicio", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(servicioService.listar(pageable));
     }
 

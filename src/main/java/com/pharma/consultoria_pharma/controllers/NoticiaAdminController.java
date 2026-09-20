@@ -26,7 +26,7 @@ public class NoticiaAdminController {
 
     @GetMapping
     public ResponseEntity<Page<NoticiaResponse>> listar(
-            @PageableDefault(size = 10, sort = "fechaPublicacion", direction = Sort.Direction.DESC) Pageable pageable,
+            @PageableDefault(size = 10, sort = "idNoticia", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(required = false) Long idCategoria) {
         return ResponseEntity.ok(noticiaService.listar(pageable, idCategoria));
     }
