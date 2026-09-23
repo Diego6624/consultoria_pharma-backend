@@ -62,6 +62,12 @@ public class PublicController {
         return ResponseEntity.ok(servicioService.listar(pageable));
     }
 
+    @GetMapping("/servicios/inicio")
+    public ResponseEntity<List<ServicioResponse>> listarServiciosParaInicio(
+            @RequestParam(defaultValue = "3") int limite) {
+        return ResponseEntity.ok(servicioService.listarParaInicio(limite));
+    }
+
     @GetMapping("/servicios/{id}")
     public ResponseEntity<ServicioResponse> obtenerServicio(@PathVariable Long id) {
         return ResponseEntity.ok(servicioService.obtenerPorId(id));

@@ -1,6 +1,7 @@
 package com.pharma.consultoria_pharma.controllers;
 
 import com.pharma.consultoria_pharma.dto.request.ServicioRequest;
+import com.pharma.consultoria_pharma.dto.request.ServicioInicioItemRequest;
 import com.pharma.consultoria_pharma.dto.response.ServicioResponse;
 import com.pharma.consultoria_pharma.services.FileStorageService;
 import com.pharma.consultoria_pharma.services.ServicioService;
@@ -15,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin/servicios")
@@ -28,6 +30,18 @@ public class ServicioAdminController {
     public ResponseEntity<Page<ServicioResponse>> listar(
             @PageableDefault(size = 10, sort = "idServicio", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(servicioService.listar(pageable));
+    }
+
+    @GetMapping("/inicio")
+    public ResponseEntity<List<ServicioResponse>> listarConfiguracionInicio() {
+        return ResponseEntity.ok(servicioService.listarConfiguracionInicio());
+    }
+
+    @PutMapping("/inicio")
+    public ResponseEntity<Void> actualizarConfiguracionInicio(
+            @RequestBody List<@Valid ServicioInicioItemRequest> items) {
+        servicioService.actualizarConfiguracionInicio(items);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")

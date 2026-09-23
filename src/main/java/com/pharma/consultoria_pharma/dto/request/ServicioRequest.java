@@ -21,7 +21,7 @@ public class ServicioRequest {
     private String titulo;
 
     @NotBlank(message = "La descripción es obligatoria")
-    @Size(max = 500)
+    @Size(max = 160, message = "La descripción no puede superar los 160 caracteres")
     private String descripcion;
 
     @NotBlank(message = "El contenido es obligatorio")
@@ -29,6 +29,13 @@ public class ServicioRequest {
 
     @Size(max = 500)
     private String imagen;
+
+    private Boolean mostrarEnInicio;
+
+    private Integer ordenInicio;
+
+    @Size(max = 80)
+    private String iconoInicio;
 
     @NotNull(message = "La categoría es obligatoria")
     private Long idCategoria;

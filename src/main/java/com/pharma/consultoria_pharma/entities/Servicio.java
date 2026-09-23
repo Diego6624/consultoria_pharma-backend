@@ -51,6 +51,15 @@ public class Servicio {
     @Column(length = 500)
     private String imagen;
 
+    @Column(name = "mostrar_en_inicio", nullable = false)
+    private Boolean mostrarEnInicio = false;
+
+    @Column(name = "orden_inicio")
+    private Integer ordenInicio;
+
+    @Column(name = "icono_inicio", length = 80)
+    private String iconoInicio;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_categoria", nullable = false)
     private Categoria categoria;

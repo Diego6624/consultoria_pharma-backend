@@ -21,6 +21,9 @@ public class ServicioResponse {
     private String descripcion;
     private String contenido;
     private String imagen;
+    private Boolean mostrarEnInicio;
+    private Integer ordenInicio;
+    private String iconoInicio;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Long idCategoria;
