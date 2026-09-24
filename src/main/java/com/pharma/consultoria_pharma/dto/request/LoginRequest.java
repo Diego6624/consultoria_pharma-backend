@@ -2,6 +2,7 @@ package com.pharma.consultoria_pharma.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,5 +21,6 @@ public class LoginRequest {
     private String email;
 
     @NotBlank(message = "La contraseña es obligatoria")
+    @Size(max = 128, message = "La contraseña no puede superar los 128 caracteres")
     private String password;
 }

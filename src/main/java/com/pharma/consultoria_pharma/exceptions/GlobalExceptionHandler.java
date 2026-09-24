@@ -1,14 +1,21 @@
 package com.pharma.consultoria_pharma.exceptions;
 
 import com.pharma.consultoria_pharma.dto.response.ApiErrorResponse;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.BindException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -52,13 +59,58 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponse> handleValidation(MethodArgumentNotValidException ex, HttpServletRequest request) {
-        List<ApiErrorResponse.FieldErrorResponse> fieldErrors = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(this::toFieldError)
-                .toList();
+        return buildError(HttpStatus.BAD_REQUEST, "Error de validación", request.getRequestURI(),
+                ex.getBindingResult().getFieldErrors().stream().map(this::toFieldError).toList());
+    }
 
-        return buildError(HttpStatus.BAD_REQUEST, "Error de validación", request.getRequestURI(), fieldErrors);
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<ApiErrorResponse> handleBinding(BindException ex, HttpServletRequest request) {
+        return buildError(HttpStatus.BAD_REQUEST, "Error de validación", request.getRequestURI(),
+                ex.getBindingResult().getFieldErrors().stream().map(this::toFieldError).toList());
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiErrorResponse> handleConstraintViolation(ConstraintViolationException ex, HttpServletRequest request) {
+        List<ApiErrorResponse.FieldErrorResponse> errors = ex.getConstraintViolations().stream()
+                .map(violation -> ApiErrorResponse.FieldErrorResponse.builder()
+                        .field(violation.getPropertyPath().toString())
+                        .message(violation.getMessage())
+                        .build())
+                .toList();
+        return buildError(HttpStatus.BAD_REQUEST, "Error de validación", request.getRequestURI(), errors);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiErrorResponse> handleTypeMismatch(MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
+        ApiErrorResponse.FieldErrorResponse error = ApiErrorResponse.FieldErrorResponse.builder()
+                .field(ex.getName())
+                .message("El valor proporcionado no es válido")
+                .build();
+        return buildError(HttpStatus.BAD_REQUEST, "Parámetro inválido", request.getRequestURI(), List.of(error));
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ApiErrorResponse> handleMissingParameter(MissingServletRequestParameterException ex, HttpServletRequest request) {
+        ApiErrorResponse.FieldErrorResponse error = ApiErrorResponse.FieldErrorResponse.builder()
+                .field(ex.getParameterName())
+                .message("El parámetro es obligatorio")
+                .build();
+        return buildError(HttpStatus.BAD_REQUEST, "Parámetro faltante", request.getRequestURI(), List.of(error));
+    }
+
+    @ExceptionHandler({HttpMessageNotReadableException.class, HttpMediaTypeNotSupportedException.class})
+    public ResponseEntity<ApiErrorResponse> handleMalformedRequest(Exception ex, HttpServletRequest request) {
+        return buildError(HttpStatus.BAD_REQUEST, "El formato de la solicitud no es válido", request.getRequestURI(), null);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiErrorResponse> handleIllegalArgument(IllegalArgumentException ex, HttpServletRequest request) {
+        return buildError(HttpStatus.BAD_REQUEST, "Uno de los parámetros enviados no es válido", request.getRequestURI(), null);
+    }
+
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ResponseEntity<ApiErrorResponse> handleInvalidSort(PropertyReferenceException ex, HttpServletRequest request) {
+        return buildError(HttpStatus.BAD_REQUEST, "El criterio de ordenamiento no es válido", request.getRequestURI(), null);
     }
 
     @ExceptionHandler(Exception.class)

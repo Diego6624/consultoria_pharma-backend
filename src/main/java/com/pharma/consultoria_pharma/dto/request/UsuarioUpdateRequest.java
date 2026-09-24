@@ -22,7 +22,7 @@ public class UsuarioUpdateRequest {
     @Size(max = 150)
     private String email;
 
-    @Size(min = 8)
+    @Size(min = 8, max = 128, message = "La contraseña debe tener entre 8 y 128 caracteres")
     private String password;
 
     private String rol;
