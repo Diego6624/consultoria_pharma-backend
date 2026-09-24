@@ -37,7 +37,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DisabledException.class)
     public ResponseEntity<ApiErrorResponse> handleDisabled(DisabledException ex, HttpServletRequest request) {
-        return buildError(HttpStatus.FORBIDDEN, "Usuario inactivo", request.getRequestURI(), null);
+        return buildError(HttpStatus.UNAUTHORIZED, "Credenciales inválidas", request.getRequestURI(), null);
+    }
+
+    @ExceptionHandler(RateLimitExceededException.class)
+    public ResponseEntity<ApiErrorResponse> handleRateLimit(RateLimitExceededException ex, HttpServletRequest request) {
+        return buildError(HttpStatus.TOO_MANY_REQUESTS, ex.getMessage(), request.getRequestURI(), null);
     }
 
     @ExceptionHandler(AccessDeniedException.class)

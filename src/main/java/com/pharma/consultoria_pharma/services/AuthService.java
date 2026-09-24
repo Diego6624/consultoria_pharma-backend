@@ -5,5 +5,5 @@ import com.pharma.consultoria_pharma.dto.response.AuthResponse;
 
 public interface AuthService {
 
-    AuthResponse login(LoginRequest request);
+    AuthResponse login(LoginRequest request, String clientIp);
 }
